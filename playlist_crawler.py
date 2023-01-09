@@ -1,30 +1,13 @@
 import argparse
 
 import requests
-from bs4 import BeautifulSoup as bs
 
 from pattern_extractor import Extractor
 
 
-def get_image(
-    page_source: str,
-    target_tag: str,
-):
-    """get image
-    get thumbnail of playlist. it's quality may be low
-    Args:
-        page_source (str): html text of target page
-        target_tag (str): target html tag of image thumbnail
-
-    Returns:
-        image url list that can access public
-    """
-    page_source.select_one(target_tag)
-
-
 def playlist_crawl(
     target_youtuber_tag: str,
-    target_string: str,
+    include_string: str,
     extractor: Extractor,
 ):
     """playlist crawler
@@ -35,34 +18,71 @@ def playlist_crawl(
         extractor (Extractor):
 
     Returns:
+        video_information (list): consist of dict that has keys(video_id(str), title(str), thunbnail_list(list))
 
     """
+    video_information_list = list()
+
     # youtube url
     page_url = f"https://www.youtube.com/@{target_youtuber_tag}/videos"
     page = requests.get(page_url, verify=False)
-    page_source = bs(page.text, "html.parser")
+    page_source = page.text
 
-    video_id_list = extractor.get_match_pattern_string(
-        head_string='"content"\:\{"videoRenderer"\:\{"videoId"\:"',
+    # get target sub_string from total_string which has all data
+    target_video_sources = extractor.get_match_pattern_string(
+        head_string="richItemRenderer",
         target_string="",
-        tail_string='"\,"thumbnail"\:\{"thumbnails',
+        tail_string="accessibility",
         total_page=page_source,
     )
-    print(video_id_list)
-    print(f"ori len : {len(video_id_list)}")
-    new_l = dict.fromkeys(video_id_list)
-    print(new_l)
-    print(f"ori len : {len(new_l)}")
 
-    # return result
+    for target_video_source in target_video_sources:
+        video_id = extractor.get_match_pattern_string(
+            head_string='videoId"\:"',
+            target_string="",
+            tail_string='"\,"',
+            total_page=target_video_source,
+        )
+        title = extractor.get_match_pattern_string(
+            head_string='text"\:"',
+            target_string="",
+            tail_string='"\}\]',
+            total_page=target_video_source,
+        )
+        title = list(filter(lambda x: include_string in x.lower(), title))
+        thumbnail_list = extractor.get_match_pattern_string(
+            head_string='url"\:"',
+            target_string="",
+            tail_string='"\,"',
+            total_page=target_video_source,
+        )
+        try:
+            video_information = {
+                "video_id": video_id[0],
+                "playlist_title": title[0],
+                "thumbnail_list": thumbnail_list,
+            }
+
+            video_information_list.append(video_information)
+        except Exception as e:
+            print(f"error occur : {e}")
+
+    assert (
+        video_id or title or thumbnail_list
+    ), f"len doesn't match video_id {len(video_id)}, title {len(title)}, thumbnail_list {len(thumbnail_list)}"
+
+    return video_information_list
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Crawler Argparse")
     parser.add_argument("--target_youtuber_tag", type=str, default="micasfu")
-    parser.add_argument("--target_string", type=str, default="[playlist]")
+    parser.add_argument("--include_string", type=str, default="[playlist]")
 
     args = parser.parse_args()
 
     extractor = Extractor()
-    playlist_crawl(args.target_youtuber_tag, args.target_string, extractor)
+    result = playlist_crawl(args.target_youtuber_tag, args.include_string, extractor)
+    print(f"total result: {result}")
+    print(f"result[0]: {result[0]}")
+    print(f"len of result is : {len(result)}")

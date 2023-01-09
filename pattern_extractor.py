@@ -9,7 +9,7 @@ class Extractor:
         target_string: str,
         tail_string: str,
     ):
-        pattern = head_string + target_string + tail_string
-        total_pattern = re.findall(pattern, total_page)
+        pattern = f"(?<={head_string}).*?" + target_string + f"(?={tail_string})"
+        total_pattern = re.findall(pattern, str(total_page))
 
         return total_pattern
