@@ -1,7 +1,6 @@
 import argparse
 
 import requests
-
 from pattern_extractor import Extractor
 
 

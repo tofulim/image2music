@@ -2,7 +2,6 @@ import argparse
 import os
 
 import pandas as pd
-
 from pattern_extractor import Extractor
 from playlist_crawler import playlist_crawl
 from song_crawler import song_crawl
@@ -66,7 +65,7 @@ if __name__ == "__main__":
     extractor = Extractor()
 
     if not args.target_youtuber_tag:
-        youtube_tags = open("./assets/youtube_tag.txt", "r").readlines()
+        youtube_tags = open("assets/youtube_tag.txt", "r").readlines()
         youtube_tags = list(map(lambda x: x.replace("\n", ""), youtube_tags))
 
         for youtube_tag in youtube_tags:
@@ -74,12 +73,12 @@ if __name__ == "__main__":
                 extractor=extractor,
                 target_youtuber_tag=youtube_tag,
                 include_string=args.include_string,
-                save_path="./result",
+                save_path="result",
             )
     else:
         runner(
             extractor=extractor,
             target_youtuber_tag=args.target_youtuber_tag,
             include_string=args.include_string,
-            save_path="./result",
+            save_path="result",
         )
