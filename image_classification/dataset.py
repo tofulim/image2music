@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 class ImageDataset(Dataset):
     """
-    youtube thumbnail image dataset
+    youtube playlist thumbnail image dataset
     """
 
     def __init__(self, data_path: str):
