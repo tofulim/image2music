@@ -59,15 +59,27 @@ def runner(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="YouTube Playlist Crawler Argparse")
-    parser.add_argument("--target_youtuber_tag", type=str, default="micasfu")
+    parser.add_argument("--target_youtuber_tag", type=str, default=None)
     parser.add_argument("--include_string", type=str, default="[playlist]")
 
     args = parser.parse_args()
     extractor = Extractor()
 
-    result = runner(
-        extractor=extractor,
-        target_youtuber_tag=args.target_youtuber_tag,
-        include_string=args.include_string,
-        save_path="./result",
-    )
+    if not args.target_youtuber_tag:
+        youtube_tags = open("./assets/youtube_tag.txt", "r").readlines()
+        youtube_tags = list(map(lambda x: x.replace("\n", ""), youtube_tags))
+
+        for youtube_tag in youtube_tags:
+            runner(
+                extractor=extractor,
+                target_youtuber_tag=youtube_tag,
+                include_string=args.include_string,
+                save_path="./result",
+            )
+    else:
+        runner(
+            extractor=extractor,
+            target_youtuber_tag=args.target_youtuber_tag,
+            include_string=args.include_string,
+            save_path="./result",
+        )
