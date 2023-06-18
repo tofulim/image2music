@@ -11,7 +11,6 @@ def song_crawl(video_id: str, extractor: Extractor):
 
     page = requests.get(page_url)
     page_text = page.text
-    extractor = Extractor()
 
     artist_source = extractor.get_match_pattern_string(
         head_string='infoRowRenderer"\:\{"title"\:\{"simpleText"\:"아티스트"',
