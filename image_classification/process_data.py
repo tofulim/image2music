@@ -6,7 +6,7 @@ import pandas as pd
 def split_dataset(result_path: str, save_path: str):
     """
     playlist csv를 train, valid로 나눈다.
-    기준은 유튜브 영상 1개(10개의 노래)를 플레이리스트 - 이미지로 매핑하여 vid_label을 부여하고 분리한다.
+    유튜브 영상 1개(10개의 노래)를 {플레이리스트: 이미지} 로 매핑하여 vid_label을 부여하고 분리한다.
 
     Args:
         result_path (str): 통합 csv 파일이 들어있는 디렉토리

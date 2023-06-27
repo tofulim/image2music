@@ -45,9 +45,6 @@ def main():
 
     device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
-    model = ImageClassificationModel(num_labels=147)
-    model.to(device)
-
     for dataset_name, data_path in data_path_dict.items():
         dataset = ImageDataset(data_path=data_path)
         data_loaders[dataset_name] = DataLoader(
@@ -57,11 +54,12 @@ def main():
             drop_last=False,
         )
 
+    model = ImageClassificationModel(num_labels=147)
+    model.to(device)
+
     trainer = Trainer(
         train_loader=data_loaders["train"],
         valid_loader=data_loaders["valid"],
-        test_loader=data_loaders["test"],
-        version=args.version,
         num_epochs=args.num_epochs,
         device=device,
         valid_every=args.valid_every,

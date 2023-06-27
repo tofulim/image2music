@@ -67,6 +67,8 @@ class Trainer:
                     )
                     print(f"best ckpt in step{step} !")
 
+        print(f"epoch train loss is {total_loss}")
+
     def _evaluate(self, valid_loader, prefix):
         targets = list()
         predictions = list()
@@ -93,4 +95,5 @@ class Trainer:
 
     def fit(self):
         for epoch in range(self.num_epochs):
+            print(f"epoch {epoch}")
             self._train_epoch()

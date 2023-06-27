@@ -44,6 +44,7 @@ if __name__ == "__main__":
     import torch
 
     device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    print(f"now using device: {device}")
 
     model = ImageClassificationModel(num_labels=10)
     model.to(device)
