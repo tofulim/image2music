@@ -17,8 +17,7 @@ class ImageDataset(Dataset):
     def __init__(self, data_path: str):
         # 이미지 전처리 프로세서 로드
         self.processor = self._get_processor()
-        # TODO delete iloc
-        data = pd.read_csv(data_path).iloc[:10]
+        data = pd.read_csv(data_path).iloc[:100]
 
         self.images, self.labels = [], []
         # pd.DataFrame에 있는 image url 주소로 요청을 보내 이미지를 받아 저장한다.
@@ -31,8 +30,6 @@ class ImageDataset(Dataset):
             self.images.append(self.processor(input_image))
             self.labels.append(vid_label)
 
-        print(f"images: {len(self.images)}")
-        print(f"labels: {self.labels}")
         self.images, self.labels = self._shuffle_items(self.images, self.labels)
 
     def _shuffle_items(self, *args):
@@ -48,17 +45,16 @@ class ImageDataset(Dataset):
         """
         items = list(zip(*args))
         random.shuffle(items)
-        shuffled_items = list(zip(items))
 
-        return shuffled_items[0], shuffled_items[1]
+        return list(zip(*items))
 
     def __len__(self):
         return len(self.labels)
 
     def __getitem__(self, idx):
         return {
-            "image": self.images[idx],
-            "label": self.labels[idx],
+            "images": self.images[idx],
+            "labels": self.labels[idx],
         }
 
     def _get_processor(self, resize: int = 256):
@@ -78,11 +74,14 @@ class ImageDataset(Dataset):
 if __name__ == "__main__":
     from torch.utils.data import DataLoader
 
-    train_dataset = ImageDataset(data_path="image_classification/data/valid_data.csv")
+    train_dataset = ImageDataset(data_path="data/valid_data.csv")
     train_dataloader = DataLoader(
         dataset=train_dataset,
         shuffle=True,
     )
     for td in train_dataloader:
-        print(td)
+        images = td["images"][0]
+        label = td["labels"][0]
+        print(f"image: {images}")
+        print(f"label: {label}")
         break
