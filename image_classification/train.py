@@ -3,6 +3,7 @@ import random
 
 import numpy as np
 import torch
+import wandb
 from dataset import ImageDataset
 from models.image_cls_model import ImageClassificationModel
 from torch.utils.data import DataLoader
@@ -37,6 +38,7 @@ def main():
     args = parser.parse_args()
 
     _init_seed(args.seed)
+    wandb.init(project="youtube_playlist_classification", name="trial1")
 
     data_path_dict = {
         "train": args.train_data_path,
@@ -58,11 +60,11 @@ def main():
     model.to(device)
 
     trainer = Trainer(
+        model=model,
         train_loader=data_loaders["train"],
         valid_loader=data_loaders["valid"],
         num_epochs=args.num_epochs,
         device=device,
-        valid_every=args.valid_every,
         save_dir=args.save_dir,
     )
 
