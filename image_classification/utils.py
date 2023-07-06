@@ -25,14 +25,13 @@ def log_metrics(
     """
 
     metrics = {
-        "f1_score": f1_score(labels, preds, "macro"),
-        "accuracy_score": accuracy_score(labels, preds, "micro"),
-        "recall_score": recall_score(labels, preds, "macro"),
-        "precision_score": precision_score(labels, preds, "macro"),
+        f"{prefix}_f1_score": f1_score(labels, preds, average="macro"),
+        f"{prefix}_accuracy_score": accuracy_score(labels, preds),
+        f"{prefix}_recall_score": recall_score(labels, preds, average="macro"),
+        f"{prefix}_precision_score": precision_score(labels, preds, average="macro"),
         f"{prefix}_loss": loss,
-        "step": step,
     }
 
-    wandb.log(metrics)
+    wandb.log(metrics, step=step)
 
     return metrics

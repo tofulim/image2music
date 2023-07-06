@@ -1,6 +1,7 @@
 import os
 
 import torch
+import wandb
 from torch import optim
 from tqdm import tqdm
 from utils import log_metrics
@@ -20,8 +21,12 @@ class Trainer:
         self.model = model
         self.train_loader = train_loader
         self.valid_loader = valid_loader
-        self.valid_every = len(self.train_loader) // 5
-        self.log_every = len(self.train_loader) // 20
+        self.valid_every = (
+            len(self.train_loader) // 5 if len(self.train_loader) > 5 else 1
+        )
+        self.log_every = (
+            len(self.train_loader) // 20 if len(self.train_loader) > 20 else 1
+        )
         self.optimizer = optim.Adam(model.parameters(), lr=3e-4)
         self.num_epochs = num_epochs
         self.device = device
@@ -32,7 +37,7 @@ class Trainer:
         self.global_step = 0
 
     def _train(self, epoch: int):
-        total_loss, train_predictions, train_labels = 0.0, [], []
+        total_loss = 0.0
 
         self.model.train()
         for step, items in enumerate(tqdm(self.train_loader)):
@@ -50,19 +55,12 @@ class Trainer:
 
             loss.backward()
             self.optimizer.step()
-            train_predictions.extend(outputs.argmax(dim=-1).tolist())
-            train_labels.extend(labels.tolist())
 
             # log train score
             if self.global_step != 0 and self.global_step % self.log_every == 0:
-                _ = log_metrics(
-                    preds=train_predictions,
-                    labels=train_labels,
-                    loss=total_loss / (step + 1),
-                    prefix="train",
-                    step=self.global_step,
+                wandb.log(
+                    {"train_loss": total_loss / (step + 1)}, step=self.global_step
                 )
-                train_predictions, train_labels = [], []
 
             # log and evaluate valid score
             if self.global_step != 0 and self.global_step % self.valid_every == 0:
@@ -70,10 +68,11 @@ class Trainer:
                 if valid_loss < self.min_valid_loss:
                     self.min_valid_loss = valid_loss
                     dir_name = f"{epoch}_step{self.global_step}"
-                    if os.path.exists(self.save_dir):
+                    if not os.path.exists(self.save_dir):
                         os.makedirs(self.save_dir)
                     torch.save(
-                        self.model.state_dict(), os.path.join(self.save_dir, dir_name)
+                        self.model.state_dict(),
+                        f"{os.path.join(self.save_dir, dir_name)}.pt",
                     )
                     print(f"best ckpt in ep{epoch} step{self.global_step}!")
 
@@ -83,8 +82,8 @@ class Trainer:
         print(f"epoch train loss is {total_loss}")
 
     def _evaluate(self, valid_loader, prefix):
-        targets = list()
-        predictions = list()
+        eval_labels = list()
+        eval_predictions = list()
         eval_loss = 0
 
         self.model.eval()
@@ -100,18 +99,19 @@ class Trainer:
                 loss = loss.mean()
                 eval_loss += loss.item()
 
-                targets.extend(labels.tolist())
-                predictions.extend(outputs.argmax(dim=-1).tolist())
+                eval_labels.extend(labels.tolist())
+                eval_predictions.extend(outputs.argmax(dim=-1).tolist())
 
+        eval_loss /= len(valid_loader)
         metrics = log_metrics(
-            preds=predictions,
-            labels=labels,
+            preds=eval_predictions,
+            labels=eval_labels,
             loss=eval_loss,
-            prefix="train",
+            prefix=prefix,
             step=self.global_step,
         )
 
-        return eval_loss / len(valid_loader), metrics
+        return eval_loss, metrics
 
     def fit(self):
         for epoch in range(self.num_epochs):

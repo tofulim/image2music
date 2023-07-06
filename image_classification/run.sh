@@ -1,3 +1,4 @@
 python3 train.py \
---save_dir ./save_dir \
---batch_size 16
+--save_dir ./ckpt \
+--batch_size 16 \
+--num_epochs 10

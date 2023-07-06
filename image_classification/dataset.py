@@ -17,7 +17,7 @@ class ImageDataset(Dataset):
     def __init__(self, data_path: str):
         # 이미지 전처리 프로세서 로드
         self.processor = self._get_processor()
-        data = pd.read_csv(data_path).iloc[:100]
+        data = pd.read_csv(data_path)
 
         self.images, self.labels = [], []
         # pd.DataFrame에 있는 image url 주소로 요청을 보내 이미지를 받아 저장한다.
