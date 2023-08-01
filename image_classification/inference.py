@@ -10,10 +10,12 @@ from torchvision import transforms
 
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
-model = ImageClassificationModel(num_labels=147).eval().to(device)
 train_df = pd.read_csv("data/train_data.csv")
 valid_df = pd.read_csv("data/valid_data.csv")
 total_playlists_df = pd.concat([train_df, valid_df]).reset_index(drop=True)
+num_labels = len(total_playlists_df["vid_label"].unique())
+model = ImageClassificationModel(num_labels=num_labels).eval().to(device)
+
 
 preprocessor = transforms.Compose(
     [
