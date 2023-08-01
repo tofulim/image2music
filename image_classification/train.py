@@ -2,6 +2,7 @@ import argparse
 import random
 
 import numpy as np
+import pandas as pd
 import torch
 import wandb
 from dataset import ImageDataset
@@ -56,7 +57,9 @@ def main():
             drop_last=False,
         )
 
-    model = ImageClassificationModel(num_labels=147)
+    valid_df = pd.read_csv(args.valid_data_path)
+    num_labels = len(valid_df["vid_label"].unique())
+    model = ImageClassificationModel(num_labels=num_labels)
     model.to(device)
 
     trainer = Trainer(
