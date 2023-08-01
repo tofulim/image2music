@@ -1,16 +1,12 @@
 import argparse
-import os
 import urllib.request
 from io import BytesIO
 
-import requests
-from PIL import Image
-import torch
-import numpy as np
 import pandas as pd
-from torchvision import transforms
+import torch
 from models.image_cls_model import ImageClassificationModel
-
+from PIL import Image
+from torchvision import transforms
 
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
@@ -24,18 +20,14 @@ preprocessor = transforms.Compose(
         transforms.Resize(256),
         transforms.CenterCrop(256),
         transforms.ToTensor(),
-        transforms.Normalize(
-            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-        ),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ]
 )
 
 
 def inference(model: ImageClassificationModel, image_url: str):
     with torch.no_grad():
-        req = urllib.request.Request(
-            image_url, headers={"User-Agent": "Mozilla/5.0"}
-        )
+        req = urllib.request.Request(image_url, headers={"User-Agent": "Mozilla/5.0"})
         res = urllib.request.urlopen(req).read()
         input_image = Image.open(BytesIO(res))
         input_image = preprocessor(input_image).to(device)
@@ -60,9 +52,7 @@ def pred2playlist(prediction: int, playlists: pd.DataFrame):
         song (tuple): 하나의 노래에 대한 정보
 
     """
-    song = playlists.query("vid_label==@prediction").sample(
-        n=1
-    )
+    song = playlists.query("vid_label==@prediction").sample(n=1)
 
     return song
 
