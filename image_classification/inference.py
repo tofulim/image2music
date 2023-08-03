@@ -10,12 +10,14 @@ from torchvision import transforms
 
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
-train_df = pd.read_csv("data/train_data.csv")
-valid_df = pd.read_csv("data/valid_data.csv")
+train_df = pd.read_csv("image_classification/data/train_data.csv")
+valid_df = pd.read_csv("image_classification/data/valid_data.csv")
 total_playlists_df = pd.concat([train_df, valid_df]).reset_index(drop=True)
 num_labels = len(total_playlists_df["vid_label"].unique())
-model = ImageClassificationModel(num_labels=num_labels).eval().to(device)
-
+model = ImageClassificationModel(num_labels=num_labels)
+# TODO: 학습 다시해야함 size 135로 안맞음
+model.load_state_dict(torch.load("image_classification/ckpt/3_step8316.pt"))
+model.eval().to(device)
 
 preprocessor = transforms.Compose(
     [
@@ -33,12 +35,10 @@ def inference(model: ImageClassificationModel, image_url: str):
         res = urllib.request.urlopen(req).read()
         input_image = Image.open(BytesIO(res))
         input_image = preprocessor(input_image).to(device)
-        print(input_image.shape)
         input_image = input_image.unsqueeze(0)
-        print(input_image.shape)
         outputs = model(input_image)
         prediction = outputs.argmax(dim=-1).tolist()
-        print(f"prediction : {prediction}")
+
     return prediction
 
 
@@ -68,5 +68,6 @@ if __name__ == "__main__":
 
     prediction = inference(model=model, image_url=image_url)
     song = pred2playlist(prediction=prediction, playlists=total_playlists_df)
+    print(song[["artist", "title", "video_id"]].values[0])
 
     print(song)
