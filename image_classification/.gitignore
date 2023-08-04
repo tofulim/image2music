@@ -1,0 +1,4 @@
+wandb/*
+*.log
+*.wandb
+#ckpt/*

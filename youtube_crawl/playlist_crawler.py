@@ -36,26 +36,27 @@ def playlist_crawl(
     )
 
     for target_video_source in target_video_sources:
-        video_id = extractor.get_match_pattern_string(
-            head_string='videoId"\:"',
-            target_string="",
-            tail_string='"\,"',
-            total_page=target_video_source,
-        )
-        title = extractor.get_match_pattern_string(
-            head_string='text"\:"',
-            target_string="",
-            tail_string='"\}\]',
-            total_page=target_video_source,
-        )
-        title = list(filter(lambda x: include_string in x.lower(), title))
-        thumbnail_list = extractor.get_match_pattern_string(
-            head_string='url"\:"',
-            target_string="",
-            tail_string='"\,"',
-            total_page=target_video_source,
-        )
         try:
+            video_id = extractor.get_match_pattern_string(
+                head_string='videoId"\:"',
+                target_string="",
+                tail_string='"\,"',
+                total_page=target_video_source,
+            )
+            title = extractor.get_match_pattern_string(
+                head_string='text"\:"',
+                target_string="",
+                tail_string='"\}\]',
+                total_page=target_video_source,
+            )
+            title = list(filter(lambda x: include_string in x.lower(), title))
+            thumbnail_list = extractor.get_match_pattern_string(
+                head_string='url"\:"',
+                target_string="",
+                tail_string='"\,"',
+                total_page=target_video_source,
+            )
+
             video_information = {
                 "video_id": video_id[0],
                 "playlist_title": title[0],
