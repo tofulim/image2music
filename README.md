@@ -32,3 +32,6 @@ Open a terminal and run:
 $ pip3 install -r requirements.txt
 
 $
+
+## Example
+<img width="750" alt="스크린샷 2023-08-03 오후 10 49 53" src="https://github.com/vail131/image2music/assets/52443401/c8da8f07-ec69-4658-aba6-a98c6dc7c6c4">
