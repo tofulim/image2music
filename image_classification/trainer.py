@@ -1,10 +1,11 @@
 import os
 
 import torch
-import wandb
 from torch import optim
 from tqdm import tqdm
 from utils import log_metrics
+
+import wandb
 
 
 class Trainer:

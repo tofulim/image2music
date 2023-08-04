@@ -1,9 +1,10 @@
 import urllib.request
 from io import BytesIO
 
-import wandb
 from PIL import Image
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
+import wandb
 
 
 def log_metrics(
