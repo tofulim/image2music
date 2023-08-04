@@ -13,7 +13,9 @@ def get_environment():
     valid_df = pd.read_csv("image_classification/data/valid_data.csv")
     total_playlists_df = pd.concat([train_df, valid_df]).reset_index(drop=True)
     num_labels = len(total_playlists_df["vid_label"].unique())
-    model = ImageClassificationModel(num_labels=num_labels).eval().to(device)
+    model = ImageClassificationModel(num_labels=num_labels)
+    model.load_state_dict(torch.load("image_classification/ckpt/5_step13020.pt"))
+    model.eval().to(device)
 
     return {
         "device": device,

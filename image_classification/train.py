@@ -4,19 +4,28 @@ import random
 import numpy as np
 import pandas as pd
 import torch
-import wandb
 from dataset import ImageDataset
 from models.image_cls_model import ImageClassificationModel
 from torch.utils.data import DataLoader
 from trainer import Trainer
+
+import wandb
 
 
 def _get_parser():
     parser = argparse.ArgumentParser(description="image2playlist")
     # Basic arguments
     parser.add_argument("--seed", type=int, default=118)
-    parser.add_argument("--train_data_path", type=str, default="data/train_data.csv")
-    parser.add_argument("--valid_data_path", type=str, default="data/valid_data.csv")
+    parser.add_argument(
+        "--train_data_path",
+        type=str,
+        default="image_classification/data/train_data.csv",
+    )
+    parser.add_argument(
+        "--valid_data_path",
+        type=str,
+        default="image_classification/data/valid_data.csv",
+    )
     parser.add_argument("--save_dir", type=str, required=True)
     # Training arguments
     parser.add_argument("--num_workers", type=int, default=4)

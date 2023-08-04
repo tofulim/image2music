@@ -15,8 +15,7 @@ valid_df = pd.read_csv("image_classification/data/valid_data.csv")
 total_playlists_df = pd.concat([train_df, valid_df]).reset_index(drop=True)
 num_labels = len(total_playlists_df["vid_label"].unique())
 model = ImageClassificationModel(num_labels=num_labels)
-# TODO: 학습 다시해야함 size 135로 안맞음
-model.load_state_dict(torch.load("image_classification/ckpt/3_step8316.pt"))
+model.load_state_dict(torch.load("image_classification/ckpt/5_step13020.pt"))
 model.eval().to(device)
 
 preprocessor = transforms.Compose(

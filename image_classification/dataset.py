@@ -74,7 +74,7 @@ class ImageDataset(Dataset):
 if __name__ == "__main__":
     from torch.utils.data import DataLoader
 
-    train_dataset = ImageDataset(data_path="data/valid_data.csv")
+    train_dataset = ImageDataset(data_path="image_classification/data/valid_data.csv")
     train_dataloader = DataLoader(
         dataset=train_dataset,
         shuffle=True,
