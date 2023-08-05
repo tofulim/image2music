@@ -65,7 +65,7 @@ if __name__ == "__main__":
     extractor = Extractor()
 
     if not args.target_youtuber_tag:
-        youtube_tags = open("assets/youtube_tag.txt", "r").readlines()
+        youtube_tags = open("youtube_crawl/assets/youtube_tag.txt", "r").readlines()
         youtube_tags = list(map(lambda x: x.replace("\n", ""), youtube_tags))
 
         for youtube_tag in youtube_tags:

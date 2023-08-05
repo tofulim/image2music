@@ -37,7 +37,9 @@ def merge_csvs(result_path: str, save_path: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="merge csv results and save")
     parser.add_argument("--result_path", type=str, default=None)
-    parser.add_argument("--save_path", type=str, default="./total_csv.csv")
+    parser.add_argument(
+        "--save_path", type=str, default="youtube_crawl/result/total_csv.csv"
+    )
 
     args = parser.parse_args()
 
