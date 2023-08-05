@@ -1,7 +1,7 @@
 # 🎸 Image2Music
 **사진에 어울리는 노래가 듣고 싶을때**
 
-image2music 지금 보고 있는 풍경에 맞는 노래를 찾고 싶을 때를 위한 모델입니다.
+image2music은 지금 보고 있는 풍경에 맞는 노래를 찾고 싶을 때를 위한 모델입니다.
 
 이미지를 넣으면 어울리는 노래(아티스트, 제목)와 해당 노래가 속한 유튜브 플레이리스트를 보여줍니다.
 
@@ -36,6 +36,7 @@ $ streamlit run image_classification/deploy.py
 - crawl playlist data
     - `youtube_crawl/assets/youtube_tag.txt` 파일에 유튜버 이름 태그를 넣어주세요
     - 단, 유튜버들의 플레이리스트는 다음처럼 더보기란에 음악 속성이 있어야 합니다.
+    <img width="1057" alt="무제" src="https://github.com/vail131/image2music/assets/52443401/9a906fd4-cdfd-4f8f-9117-fbc014891f03">
 
     ```
     # youtube crawl
